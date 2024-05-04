@@ -21,7 +21,9 @@ def whats_new(session):
     soup = BeautifulSoup(response.text, features='lxml')
     main_div = find_tag(soup, 'section', attrs={'id': 'what-s-new-in-python'})
     div_with_ul = find_tag(main_div, 'div', attrs={'class': 'toctree-wrapper'})
-    sections_by_python = div_with_ul.find_all('li', attrs={'class': 'toctree-l1'})
+    sections_by_python = div_with_ul.find_all(
+        'li', attrs={'class': 'toctree-l1'}
+    )
     results = [('Ссылка на статью', 'Заголовок', 'Редактор, Автор')]
     for section in tqdm(sections_by_python):
         version_a_tag = find_tag(section, 'a')
@@ -75,7 +77,11 @@ def download(session):
         return
     soup = BeautifulSoup(response.text, 'lxml')
     table_tag = find_tag(soup, 'table', {'class': 'docutils'})
-    pdf_a4_tag = find_tag(table_tag, 'a', {'href': re.compile(r'.+pdf-a4\.zip$')})
+    pdf_a4_tag = find_tag(
+        table_tag,
+        'a',
+        {'href': re.compile(r'.+pdf-a4\.zip$')}
+    )
     pdf_a4_link = pdf_a4_tag['href']
     archive_link = urljoin(downloads_url, pdf_a4_link)
     filename = archive_link.split('/')[-1]
@@ -94,7 +100,9 @@ def pep(session):
         return
     soup = BeautifulSoup(response.text, 'lxml')
     section = soup.find('section', {'id': 'numerical-index'})
-    table = section.find('table', {'class': 'pep-zero-table docutils align-default'})
+    table = section.find(
+        'table', {'class': 'pep-zero-table docutils align-default'}
+    )
     tbody = table.find('tbody')
     result = [('Cтатус', 'Количество')]
     misssmatched_statuses = []
@@ -113,7 +121,9 @@ def pep(session):
         tag_with_status = find_tag(dl, lambda tag: 'Status' in tag.text)
         status_form_page = tag_with_status.find_next_sibling().string
         if status_form_page not in EXPECTED_STATUS[status]:
-            misssmatched_statuses.append((pep_link, status_form_page, EXPECTED_STATUS[status]))
+            misssmatched_statuses.append(
+                (pep_link, status_form_page, EXPECTED_STATUS[status])
+            )
         status_counter[status_form_page] += 1
     if misssmatched_statuses:
         logging.info('Несовпадающие статусы')

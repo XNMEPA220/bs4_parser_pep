@@ -1,11 +1,9 @@
-# utils.py
 import logging
+
 from exceptions import ParserFindTagException
 
-# Импорт базового класса ошибок библиотеки request.
 from requests import RequestException
 
-# Перехват ошибки RequestException.
 def get_response(session, url):
     try:
         response = session.get(url)
